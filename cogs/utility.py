@@ -1,13 +1,16 @@
-from discord.ext.commands import cog
+from discord import ApplicationContext, slash_command
+from discord.ext.commands import Cog, Bot
 from discord.ext import commands
-from discord import Bot, Cog
+
+from characters.mercenary import Mercenary
 
 class Utility(Cog):
-    def __init__(self,client: Bot):
-        self.client = client
-        print("Utility has been added")
+    def __init__(self,bot: Bot):
+        self.bot = bot
     
-    
+    @slash_command(name="ping",description="Ping to make sure this bot is alive!",guild_ids=[903338023960313876])
+    async def ping(self,ctx: ApplicationContext):
+        await ctx.respond(f"Pong!  Your latency is {round(self.bot.latency * 100,2)} miliseconds!")   
 
-def setup(client: Bot):
-    client.add_cog(Utility(client))
+def setup(bot: Bot):
+    bot.add_cog(Utility(bot))
