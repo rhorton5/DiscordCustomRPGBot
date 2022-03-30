@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 class DefaultCharacter(ABC):
-    def __init__(self,name: str, STR: int, DEX: int, AGI: int, CON: int, SPR: int, INT: int, WIS: int, CHA: int, LUC: int,img_url: str):
+    def __init__(self,name: str, STR: int, DEX: int, AGI: int, CON: int, SPR: int, INT: int, WIS: int, CHA: int, LUC: int,img_url = None):
         self.name = name
         self.STR = STR
         self.DEX = DEX

@@ -5,8 +5,8 @@ class Mercenary(PlayerCharacter):
         
     async def setHP(self):
         self.HP = self.CON + self.SPR + 10
-        super().setHP()
+        await super().setHP()
     
     async def setMP(self):
         self.MP = self.getModifiers(self.INT)
-        super().setMP()
+        await super().setMP()

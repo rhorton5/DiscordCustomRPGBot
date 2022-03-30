@@ -6,7 +6,8 @@ class ClassSelection(Select):
         self.bot = bot
 
         options = [
-            SelectOption(label="Mercenary",description="Think Fighter...",emoji="⚔️")
+            SelectOption(label="Mercenary",description="Think Fighter...",emoji="⚔️"),
+            SelectOption(label="Alchemist",description="Think Wizard...",emoji="🍾")
         ]
 
         super().__init__(
