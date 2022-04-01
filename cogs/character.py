@@ -5,6 +5,7 @@ from characters.playerCharacter import PlayerCharacter
 from views.characterSheetView import CharacterSheetView, ConfirmStats
 from views.classViews import ClassSelectionView
 from views.firstLevelSkillView import FirstLevelSkillView
+from jsons.jsonManager import saveCharacterJson
 
 class CreateCharacter(Cog):
     def __init__(self,bot: Bot):
@@ -26,6 +27,10 @@ class CreateCharacter(Cog):
         await pc.setSkills(skills)
         if await self.__confirmChoice(dm,pc) == True:
             await dm.send(f"Your character has been saved!!")
+            json = dict()
+            json[str(ctx.author.id)][await pc.getName()] = await pc.generateJson()
+            saveCharacterJson(json)
+            
         else:
             await CreateCharacter(ctx)
 

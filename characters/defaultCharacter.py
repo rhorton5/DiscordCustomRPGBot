@@ -88,3 +88,6 @@ class DefaultCharacter(ABC):
             score = self.skills[skill]["Rank Points"] + await self.__getAttribute(self.skills[skill]["Attribute"])
             string += f"**{skill}**: +{score}\n"
         return string
+    
+    async def getName(self):
+        return self.name

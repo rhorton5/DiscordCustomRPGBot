@@ -79,6 +79,37 @@ class PlayerCharacter(DefaultCharacter,ABC):
     @abstractmethod
     async def getStartingSpellAmount(self):
         pass
-
+    
+    async def generateJson(self):
+        json = dict()
+        json["Attributes"] = {
+            "Level": self.level,
+            "XP": self.xp,
+            "HP": self.HP,
+            "MaxHP": self.MaxHP,
+            "MP": self.MP,
+            "MaxMP": self.MaxMP,
+            "Strength": self.STR, 
+            "Dexterity": self.DEX, 
+            "Agility": self.AGI,
+            "Constitution": self.CON,
+            "Spirit": self.SPR,
+            "Intellect": self.INT,
+            "Wisdom": self.WIS,
+            "Charisma": self.CHA,
+            "Luck": self.LUC
+        },
+        json["Equipment"] = {
+            "Right Hand": None,
+            "Left Hand": None,
+            "Accessories": [],
+            "Armor": None
+        },
+        json["Inventory"] = [],
+        json["Gold"] = 150,
+        json["Spells"] = {},
+        json["Abilities"] = {},
+        json["Skills"] = await self.getSkillsDict()
+        return json
         
     
