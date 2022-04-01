@@ -1,0 +1,58 @@
+{
+    "Athletic": {
+        "Attribute": "Strength"
+    },
+    "Larceny": {
+        "Attribute": "Dexterity"
+    },
+    "Stealth": {
+        "Attribute": "Dexterity"
+    },
+    "Acrobatics": {
+        "Attribute": "Dexterity"
+    },
+    "Contortion": {
+        "Attribute": "Dexterity"
+    },
+    "Dodge": {
+        "Attribute": "Agility"
+    },
+    "Drive": {
+        "Attribute": "Agility"
+    },
+    "Appraise": {
+        "Attribute": "Intellect"
+    },
+    "Crafting": {
+        "Attribute": "Intellect"
+    },
+    "Knowledge": {
+        "Subtypes": ["Nature","Arcana","Medical","History","Technology","Academia","Occult"],
+        "Attribute": "Intellect"
+    },
+    "Insight":{
+        "Attribute": "Wisdom"
+    },
+    "Percetion": {
+        "Attribute": "Wisdom"
+    },
+    "Survival": {
+        "Attribute": "Wisdom"
+    },
+    "Intimidate": {
+        "Attribute": "Charisma"
+    },
+    "Persuasion": {
+        "Attribute": "Charisma"
+    },
+    "Performace": {
+        "Subtypes": ["Singing","Insturment","Act","Comedy","Storytelling"],
+        "Attribute": "Charisma"
+    },
+    "Bluff": {
+        "Attribute": "Charisma"
+    },
+    "Disguise": {
+        "Attribute": "Charisma"
+    }
+}

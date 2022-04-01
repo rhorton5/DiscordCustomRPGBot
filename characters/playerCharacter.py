@@ -68,6 +68,17 @@ class PlayerCharacter(DefaultCharacter,ABC):
         return "🔥 Fire: {}% | 🌊 Water: {}% | 🌱 Earth: {}%\n💨 Wind: {}% | 🧊 Ice: {}% | ☠️ Posion: {}%\n☢️ Acid: {}% | ⚡ Electric: {}% | 💡 Light: {}%\n🌙 Dark: {}% | 👁️ Psychic: {}% | 🟣 Slag: {}%\n✊ Bludgeon: {}% | 📌 Pierce: {}% | 🗡️ Slash: {}%".format(
             1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
         )
+    
+    async def getSkillPoints(self):
+        return self.getModifiers(self.INT)
+    
+    @abstractmethod
+    async def getStartingAbilityAmount(self):
+        pass
+    
+    @abstractmethod
+    async def getStartingSpellAmount(self):
+        pass
 
         
     

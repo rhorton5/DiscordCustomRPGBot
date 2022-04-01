@@ -10,3 +10,12 @@ class Alchemist(PlayerCharacter):
     async def setMP(self):
         self.MP = self.getModifiers(self.INT) * 2
         await super().setMP()
+    
+    async def getSkillPoints(self):
+        return await super().getSkillPoints() + 4
+    
+    async def getStartingSpellAmount(self):
+        return 10
+    
+    async def getStartingAbilityAmount(self):
+        return 2

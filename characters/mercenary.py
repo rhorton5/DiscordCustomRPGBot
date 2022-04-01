@@ -10,3 +10,12 @@ class Mercenary(PlayerCharacter):
     async def setMP(self):
         self.MP = self.getModifiers(self.INT)
         await super().setMP()
+    
+    async def getSkillPoints(self):
+        return await super().getSkillPoints() + 2
+    
+    async def getStartingAbilityAmount(self):
+        return 3
+    
+    async def getStartingSpellAmount(self):
+        return 1

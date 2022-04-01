@@ -1,8 +1,10 @@
-from discord import Bot, Cog, slash_command
+from discord import Bot, Cog, Embed, slash_command
 from characters.alchemist import Alchemist
 from characters.mercenary import Mercenary
-from views.characterSheetView import CharacterSheetView
+from characters.playerCharacter import PlayerCharacter
+from views.characterSheetView import CharacterSheetView, ConfirmStats
 from views.classViews import ClassSelectionView
+from views.firstLevelSkillView import FirstLevelSkillView
 
 class CreateCharacter(Cog):
     def __init__(self,bot: Bot):
@@ -18,9 +20,15 @@ class CreateCharacter(Cog):
         attributeScores = await self.__getCharacterAttributes(dm,ctx.author.name)
         playerClass = await self.__selectClass(dm)
         pc = await PlayerCharacterFactory.createCharacter(attributeScores["Name"],attributeScores,playerClass)
-        csv = CharacterSheetView(pc)
-        await ctx.send(embed=await csv.createEmbed())
-    
+        #csv = CharacterSheetView(pc)
+        #await ctx.send(embed=await csv.createEmbed())
+        skills = await self.__selectSkills(dm,pc)
+        await pc.setSkills(skills)
+        if await self.__confirmChoice(dm,pc) == True:
+            await dm.send(f"Your character has been saved!!")
+        else:
+            await CreateCharacter(ctx)
+
     async def __getCharacterAttributes(self,dm,author_name):
         #Checks
         def nameCheck(m):
@@ -54,7 +62,28 @@ class CreateCharacter(Cog):
         await dm.send(view=csv)
         await self.bot.wait_for('interaction',check=hasChosenClass)
         return await csv.getClassSelection()
+    
+    async def __selectSkills(self,dm,pc: PlayerCharacter):
+        flsv = FirstLevelSkillView(self.bot,await pc.getSkillPoints())
+
+        def hasChosenSkills(i):
+            return flsv.buttonPressed()
+
+        await dm.send(view=flsv,embed=await flsv.getEmbeddedMessage())
+        await self.bot.wait_for('interaction',check=hasChosenSkills)
+        return await flsv.getSkillSelections()
+
+    async def __confirmChoice(self,dm,pc: PlayerCharacter):
+        csv = CharacterSheetView(pc)
+        cs = ConfirmStats()
         
+        def confirmButtonPressed(i):
+            return True
+        
+        await dm.send(view=cs,embed=await csv.createEmbed())
+        await  self.bot.wait_for('interaction',check=confirmButtonPressed)
+
+        return await cs.getResult()
 
 class PlayerCharacterFactory:
     async def createCharacter(name: str, att: dict, className: str):

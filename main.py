@@ -9,5 +9,5 @@ async def on_ready():
 bot.load_extension('cogs.utility')
 bot.load_extension('cogs.character')
 
-bot.run("OTA5ODU4NTc3OTg3MDM5MzAy.YZKZ1Q.EvpzgIeSQ99o5Yy0gZxK8rE58Vw")
+bot.run("OTA5ODU4NTc3OTg3MDM5MzAy.YZKZ1Q.tOc-GTSG55Ymbld5aOavBa-g46k")
 
