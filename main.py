@@ -1,4 +1,6 @@
 from discord import bot
+from sys import argv
+
 
 bot = bot.Bot()
 
@@ -9,5 +11,8 @@ async def on_ready():
 bot.load_extension('cogs.utility')
 bot.load_extension('cogs.character')
 
-bot.run("OTA5ODU4NTc3OTg3MDM5MzAy.YZKZ1Q.tOc-GTSG55Ymbld5aOavBa-g46k")
+if len(argv) <= 0:
+    print("Please supply a key to use!!")
+else:
+  bot.run(argv[1])
 
