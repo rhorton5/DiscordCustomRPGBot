@@ -1,82 +1,64 @@
 {
-  "221741998367834113": "Ryley",
-  "Ryley": {
-    "Abilities": [
-      {}
-    ],
-    "Attributes": [
-      {
-        "Agility": 16,
-        "Charisma": 13,
-        "Constitution": 15,
-        "Dexterity": 13,
-        "HP": 33,
-        "Intellect": 20,
-        "Level": 1,
-        "Luck": 12,
-        "MP": 10,
-        "MaxHP": 33,
-        "MaxMP": 10,
-        "Spirit": 13,
-        "Strength": 15,
-        "Wisdom": 15,
-        "XP": 0
-      }
-    ],
-    "Equipment": [
-      {
-        "Accessories": [],
-        "Armor": null,
-        "Left Hand": null,
-        "Right Hand": null
-      }
-    ],
-    "Gold": [
-      150
-    ],
-    "Inventory": [
-      []
-    ],
-    "Skills": {
-      "Athletic": {
-        "Attribute": "Strength",
-        "Rank Points": 1
+  "221741998367834113": {
+    "Rye": {
+      "Abilities": [
+        {}
+      ],
+      "Attributes": [
+        {
+          "Agility": 15,
+          "Charisma": 12,
+          "Constitution": 16,
+          "Dexterity": 14,
+          "HP": 40,
+          "Intellect": 15,
+          "Level": 1,
+          "Luck": 14,
+          "MP": 2,
+          "MaxHP": 40,
+          "MaxMP": 2,
+          "Spirit": 14,
+          "Strength": 17,
+          "Wisdom": 18,
+          "XP": 0
+        }
+      ],
+      "Equipment": [
+        {
+          "Accessories": [],
+          "Armor": null,
+          "Left Hand": null,
+          "Right Hand": null
+        }
+      ],
+      "Gold": [
+        150
+      ],
+      "Inventory": [
+        []
+      ],
+      "Resistance": {},
+      "Skills": {
+        "Athletic": {
+          "Attribute": "Strength",
+          "Rank Points": 1
+        },
+        "Contortion": {
+          "Attribute": "Dexterity",
+          "Rank Points": 1
+        },
+        "Insight": {
+          "Attribute": "Wisdom",
+          "Rank Points": 1
+        },
+        "Percetion": {
+          "Attribute": "Wisdom",
+          "Rank Points": 1
+        }
       },
-      "Insight": {
-        "Attribute": "Wisdom",
-        "Rank Points": 1
-      },
-      "Knowledge [Arcana]": {
-        "Attribute": "Intellect",
-        "Rank Points": 1
-      },
-      "Knowledge [History]": {
-        "Attribute": "Intellect",
-        "Rank Points": 1
-      },
-      "Knowledge [Medical]": {
-        "Attribute": "Intellect",
-        "Rank Points": 1
-      },
-      "Larceny": {
-        "Attribute": "Dexterity",
-        "Rank Points": 1
-      },
-      "Percetion": {
-        "Attribute": "Wisdom",
-        "Rank Points": 1
-      },
-      "Persuasion": {
-        "Attribute": "Charisma",
-        "Rank Points": 1
-      },
-      "Stealth": {
-        "Attribute": "Dexterity",
-        "Rank Points": 1
-      }
-    },
-    "Spells": [
-      {}
-    ]
+      "Spells": [
+        {}
+      ]
+    }
   }
 }

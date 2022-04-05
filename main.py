@@ -1,5 +1,5 @@
 from discord import bot
-from sys import argv
+from jsons.jsonManager import getTokenKey
 
 
 bot = bot.Bot()
@@ -10,9 +10,7 @@ async def on_ready():
 
 bot.load_extension('cogs.utility')
 bot.load_extension('cogs.character')
+bot.load_extension('cogs.session')
 
-if len(argv) <= 0:
-    print("Please supply a key to use!!")
-else:
-  bot.run(argv[1])
+bot.run(getTokenKey())
 

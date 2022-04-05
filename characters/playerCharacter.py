@@ -79,6 +79,9 @@ class PlayerCharacter(DefaultCharacter,ABC):
     @abstractmethod
     async def getStartingSpellAmount(self):
         pass
+
+    async def sessionStatus(self):
+        return f"{self.name} |   Lvl. {self.level}   |   Condition: Healthy"
     
     async def generateJson(self):
         json = dict()
@@ -110,6 +113,7 @@ class PlayerCharacter(DefaultCharacter,ABC):
         json["Spells"] = {},
         json["Abilities"] = {},
         json["Skills"] = await self.getSkillsDict()
+        json["Resistance"] = {}
         return json
         
     
