@@ -1,5 +1,6 @@
 from discord import Bot, Cog, Embed, slash_command
 from characters.alchemist import Alchemist
+from characters.berserker import Berserker
 from characters.mercenary import Mercenary
 from characters.playerCharacter import PlayerCharacter
 from views.characterSheetView import CharacterSheetView, ConfirmStats
@@ -95,7 +96,8 @@ class PlayerCharacterFactory:
     async def createCharacter(name: str, att: dict, className: str):
         switch = {
             "Mercenary": Mercenary,
-            "Alchemist": Alchemist
+            "Alchemist": Alchemist,
+            "Berserker": Berserker
         }
         pc = switch[className](name,att["Strength"],att["Dexterity"],att["Agility"],att["Constitution"],att["Spirit"],att["Intellect"],att["Wisdom"],att["Charisma"],att["Luck"])
         await pc.setHP()

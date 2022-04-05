@@ -8,6 +8,17 @@ class PlayerCharacter(DefaultCharacter,ABC):
         self.xp = 0
         self.ele_res = dict()
         
+    async def configureCharacter(self,jsonStats: dict):
+        attributes = jsonStats["Attributes"][0]
+        self.HP = attributes["HP"]
+        self.MaxHP = attributes["MaxHP"]
+        self.MP = attributes["MP"]
+        self.MaxMP = attributes["MaxMP"]
+        self.xp = attributes["XP"]
+        self.level = attributes["Level"]
+
+        self.skills = jsonStats["Skills"]
+    
     async def setHP(self):
         self.MaxHP = self.HP
     
@@ -79,9 +90,13 @@ class PlayerCharacter(DefaultCharacter,ABC):
     @abstractmethod
     async def getStartingSpellAmount(self):
         pass
-
+    
+    @abstractmethod
+    async def getClassName(self):
+        pass
+    
     async def sessionStatus(self):
-        return f"{self.name} |   Lvl. {self.level}   |   Condition: Healthy"
+        return f"{self.name}  | Lvl. {self.level} | Health: **{self.healthDescription()}**"
     
     async def generateJson(self):
         json = dict()
@@ -114,6 +129,7 @@ class PlayerCharacter(DefaultCharacter,ABC):
         json["Abilities"] = {},
         json["Skills"] = await self.getSkillsDict()
         json["Resistance"] = {}
+        json["Class"] = await self.getClassName()
         return json
         
     

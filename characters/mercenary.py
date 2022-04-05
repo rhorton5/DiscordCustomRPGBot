@@ -19,3 +19,6 @@ class Mercenary(PlayerCharacter):
     
     async def getStartingSpellAmount(self):
         return 1
+    
+    async def getClassName(self):
+        return "Mercenary"

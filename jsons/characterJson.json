@@ -10,7 +10,7 @@
           "Charisma": 12,
           "Constitution": 16,
           "Dexterity": 14,
-          "HP": 40,
+          "HP": 35,
           "Intellect": 15,
           "Level": 1,
           "Luck": 14,
@@ -23,6 +23,7 @@
           "XP": 0
         }
       ],
+      "Class": "Mercenary",
       "Equipment": [
         {
           "Accessories": [],
@@ -53,6 +54,79 @@
         },
         "Percetion": {
           "Attribute": "Wisdom",
+          "Rank Points": 1
+        }
+      },
+      "Spells": [
+        {}
+      ]
+    },
+    "Varnak": {
+      "Abilities": [
+        {}
+      ],
+      "Attributes": [
+        {
+          "Agility": 16,
+          "Charisma": 13,
+          "Constitution": 13,
+          "Dexterity": 15,
+          "HP": 47,
+          "Intellect": 17,
+          "Level": 1,
+          "Luck": 12,
+          "MP": 0,
+          "MaxHP": 47,
+          "MaxMP": 0,
+          "Spirit": 14,
+          "Strength": 20,
+          "Wisdom": 19,
+          "XP": 0
+        }
+      ],
+      "Class": "Berserker",
+      "Equipment": [
+        {
+          "Accessories": [],
+          "Armor": null,
+          "Left Hand": null,
+          "Right Hand": null
+        }
+      ],
+      "Gold": [
+        150
+      ],
+      "Inventory": [
+        []
+      ],
+      "Resistance": {},
+      "Skills": {
+        "Acrobatics": {
+          "Attribute": "Dexterity",
+          "Rank Points": 1
+        },
+        "Contortion": {
+          "Attribute": "Dexterity",
+          "Rank Points": 1
+        },
+        "Knowledge [Arcana]": {
+          "Attribute": "Intellect",
+          "Rank Points": 1
+        },
+        "Knowledge [History]": {
+          "Attribute": "Intellect",
+          "Rank Points": 1
+        },
+        "Knowledge [Nature]": {
+          "Attribute": "Intellect",
+          "Rank Points": 1
+        },
+        "Larceny": {
+          "Attribute": "Dexterity",
+          "Rank Points": 1
+        },
+        "Stealth": {
+          "Attribute": "Dexterity",
           "Rank Points": 1
         }
       },

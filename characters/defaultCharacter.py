@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from discord import Embed
+from random import randint
 class DefaultCharacter(ABC):
     def __init__(self,name: str, STR: int, DEX: int, AGI: int, CON: int, SPR: int, INT: int, WIS: int, CHA: int, LUC: int,img_url = None):
         self.name = name
@@ -18,6 +18,7 @@ class DefaultCharacter(ABC):
         self.MaxMP = 0
         self.img_url = img_url
         self.elemental_resistance = dict()
+        self.initiative = 0
     
     def getModifiers(self,att: int):
         return int((att-10)/2)
@@ -67,6 +68,25 @@ class DefaultCharacter(ABC):
     
     async def getSkillsDict(self):
         return self.skills
+    
+    async def rollInitiative(self):
+        self.initiative = randint(1,20) + self.getModifiers(self.AGI)
+
+    def healthDescription(self):
+        if self.HP / self.MaxHP == 1.00:
+            return "Healthy!"
+        elif self.HP / self.MaxHP >= 0.50:
+            return "Injured"
+        elif self.HP / self.MaxHP >= 0.25:
+            return "Really Hurt..."
+        elif self.HP > 0:
+            return "Critical..."
+        else:
+            return "KO'ed"
+    
+    async def sessionStatus(self):
+        return f"{self.name}  | Health: **{self.healthDescription()}**"
+
     
     async def __getAttribute(self,attribute: str):
         att = {
