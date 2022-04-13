@@ -5,7 +5,7 @@ class Item(ABC):
         self.value = value
         self.weight = weight
     
-    async def getName(self):
+    def getName(self):
         return self.name
     
     async def getValue(self):
@@ -17,3 +17,6 @@ class Item(ABC):
     @abstractmethod
     async def getType(self):
         pass
+
+    async def getDescription(self):
+        return "**Weight:** {} lbs.\nValue: {} Gold".format(self.weight,self.value)

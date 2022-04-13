@@ -22,3 +22,6 @@ class Mercenary(PlayerCharacter):
     
     async def getClassName(self):
         return "Mercenary"
+    
+    async def __getClassLevelMod__(self):
+        return int(self.level/3) + 1

@@ -12,6 +12,10 @@ def loadCharacterJson():
     with open("jsons/characterJson.json","r") as characterJson:
         return load(characterJson)
 
+def loadWeaponJson():
+    with open("jsons/weaponConfig.json","r") as weaponJson:
+        return load(weaponJson)
+
 def getTokenKey():
     with open("jsons/config.json","r") as config:
         return load(config)["Token"]

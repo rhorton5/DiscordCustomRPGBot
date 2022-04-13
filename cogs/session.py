@@ -1,7 +1,10 @@
 from pydoc import describe
-from discord import Bot, Cog, Embed, slash_command
-from jsons.jsonManager import loadCharacterJson
+from discord import ApplicationCommand, ApplicationContext, Bot, Cog, Embed, slash_command
+from items.item import Item
+from jsons.jsonManager import loadCharacterJson, loadWeaponJson
 from characters.loadCharacter import loadCharacter
+from views.characterSheetEmb import CharacterSheetEmb
+from items.itemFactory import createItem
 
 #Colors
 normal_emb_color = 0x0096FF
@@ -13,25 +16,42 @@ class Session(Cog):
         super().__init__()
         self.bot = bot
         self.activeSession = dict()
+        tmpItem = loadWeaponJson()
+        self.items = [createItem(i,tmpItem[i]) for i in tmpItem.keys()]
+        print(self.items)
+        
     
     @slash_command(name="start_session",description="Starts the session for this campaign!",guild_ids=[903338023960313876])
     async def startSession(self,ctx):
         guild_id = str(ctx.guild.id)
         if(self.activeSession.get(guild_id,None) == None):
             self.activeSession[guild_id] = dict()
-            self.activeSession[guild_id]["Characters"] = list()
+            self.activeSession[guild_id] = {
+                "Characters": list(),
+                "Items": self.items,
+                "Description": "A normal adventure",
+                "ChannelMSG": None
+            }
+            print(self.activeSession[guild_id])
             self.activeSession[guild_id]["ChannelMSG"] = await ctx.respond(embed=await self.__createSessionEmbed(guild_id))
         else:
             await ctx.respond("You already have a session")
     
     async def __createSessionEmbed(self,guild_id: str):
-        emb = Embed(title="The Campaign!",description="",color=normal_emb_color)
+        emb = Embed(title="The Campaign!",description=self.activeSession[guild_id]["Description"],color=normal_emb_color)
         if len(self.activeSession[guild_id]["Characters"]) == 0:
-            emb.add_field(name="Characters",value="Add Characters with the /add command",inline=False)
+            emb.add_field(name="Characters",value="Add Characters with the /add_character command",inline=False)
         else:
             emb.add_field(name="Characters",value="\n".join(
                 [await char.sessionStatus() for char in self.activeSession[guild_id]["Characters"]]
-                )
+                ),
+                inline=False
+            )
+        if len(self.activeSession[guild_id]["Items"]) != 0:
+            emb.add_field(name="Items",value=" | ".join(
+                    [i.getName() for i in self.activeSession[guild_id]["Items"]]
+                ),
+                inline=False
             )
         return emb
     
@@ -54,7 +74,9 @@ class Session(Cog):
                     await ctx.respond(f"{character_name} was not found.")
                 else:
                     cJson = charJson[author_id][character_name]
-                    self.activeSession[guild_id]["Characters"].append(await loadCharacter(character_name,cJson))
+                    c = await loadCharacter(character_name,cJson)
+                    await c.setAuthorID(author_id)
+                    self.activeSession[guild_id]["Characters"].append(c)
                     await self.activeSession[guild_id]["ChannelMSG"].edit_original_message(embed=await self.__createSessionEmbed(guild_id))
                     await ctx.respond(f"{character_name} has been added!!")
     
@@ -67,6 +89,74 @@ class Session(Cog):
             await self.activeSession[guild_id]["ChannelMSG"].edit_original_message(embed=await self.__createEndSessionEmbed())
             self.activeSession.pop(guild_id)
             await ctx.respond("The session has ended!")
+    
+    async def getCharacter(self,guild_id:str, name:str):
+        characterList = self.activeSession[guild_id]["Characters"]
+        for c in characterList:
+            if await c.getName() == name:
+                return c
+        return None
+
+    
+    async def isActiveSession(self,guild_id:str):
+        return self.activeSession.get(guild_id,None) != None
+    
+    @slash_command(name="status",description="Shows the select character's status",guild_ids=[903338023960313876])
+    async def status(self,ctx: ApplicationContext,name:str):
+        author_id = str(ctx.author.id)
+        guild_id = str(ctx.guild.id)
+        if await self.isActiveSession(guild_id) == False:
+            await ctx.respond("You must have an active session first...")
+            return
+        
+        character = await self.getCharacter(guild_id,name)
+        if character == None:
+            await ctx.respond("Your character does not exist in this session...")
+            return
+        
+        cse = CharacterSheetEmb()
+        await ctx.respond(embed=await cse.createCharacterSheet(character))
+    
+    async def __createItemDescription(self,item: Item):
+        return Embed(title=item.getName(),description=await item.getDescription())
+    
+    
+    @slash_command(name="inspect_item",description="Describes an item either in your inventory or currently in the session.",guild_ids=[903338023960313876])
+    async def inspect(self,ctx: ApplicationContext, item_name: str):
+        author_id = str(ctx.author.id)
+        guild_id = str(ctx.guild.id)
+        if await self.isActiveSession(guild_id) == False:
+            await ctx.respond("You must have an active session first...")
+            return
+
+        itemList = list(filter(lambda i: i.getName() == item_name, self.activeSession[guild_id]["Items"]))
+        #TO-DO: Add a function to inspect a character.
+        
+        for i in itemList:
+            await ctx.send(embed=await self.__createItemDescription(i))
+        await ctx.respond("These are the items found...")   
+    
+    @slash_command(name="grab_item",description="Take an item to your character's inventory",guild_ids=[903338023960313876])
+    async def grabItem(self,ctx: ApplicationContext, character_name: str, item_name: str):
+        author_id = str(ctx.author.id)
+        guild_id = str(ctx.guild.id)
+        if await self.isActiveSession(guild_id) == False:
+            await ctx.respond("You must have an active session first...")
+            return
+        
+        character = await self.getCharacter(guild_id,character_name)
+        if character == None or await character.getAuthorID() != author_id:
+            await ctx.respond("Your character does not exist in this session...")
+            return
+        
+        filterItemList = list(filter(lambda i: i.getName() == item_name,self.activeSession[guild_id]["Items"]))
+        if len(filterItemList) == 0:
+            await ctx.respond("The item was not found")
+        else:
+            await character.addItem(filterItemList[0])
+            await ctx.respond(f"{await character.getName()} has added {filterItemList[0].getName()} to their inventory!")
+            self.activeSession[guild_id]["Items"].remove(filterItemList[0])
+            await self.activeSession[guild_id]["ChannelMSG"].edit_original_message(embed=await self.__createSessionEmbed(guild_id))
 
 def setup(bot: Bot):
     bot.add_cog(Session(bot))

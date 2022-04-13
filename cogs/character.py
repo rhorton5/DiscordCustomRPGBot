@@ -22,8 +22,6 @@ class CreateCharacter(Cog):
         attributeScores = await self.__getCharacterAttributes(dm,ctx.author.name)
         playerClass = await self.__selectClass(dm)
         pc = await PlayerCharacterFactory.createCharacter(attributeScores["Name"],attributeScores,playerClass)
-        #csv = CharacterSheetView(pc)
-        #await ctx.send(embed=await csv.createEmbed())
         skills = await self.__selectSkills(dm,pc)
         await pc.setSkills(skills)
         if await self.__confirmChoice(dm,pc) == True:

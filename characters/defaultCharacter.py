@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from random import randint
 class DefaultCharacter(ABC):
     def __init__(self,name: str, STR: int, DEX: int, AGI: int, CON: int, SPR: int, INT: int, WIS: int, CHA: int, LUC: int,img_url = None):
         self.name = name
@@ -19,12 +18,15 @@ class DefaultCharacter(ABC):
         self.img_url = img_url
         self.elemental_resistance = dict()
         self.initiative = 0
+        self.rHand = None
+        self.lHand = None
+        self.inventory = list()
     
     def getModifiers(self,att: int):
         return int((att-10)/2)
     
     async def getCarryingCapacity(self):
-        return self.STR * 5
+        return self.STR * 10
     
     async def getArmorClass(self):
         return 10 + self.getModifiers(self.AGI) + self.getModifiers(self.DEX)
@@ -69,8 +71,8 @@ class DefaultCharacter(ABC):
     async def getSkillsDict(self):
         return self.skills
     
-    async def rollInitiative(self):
-        self.initiative = randint(1,20) + self.getModifiers(self.AGI)
+    async def rollInitiative(self,diceRoll=1):
+        self.initiative = diceRoll + self.getModifiers(self.AGI)
 
     def healthDescription(self):
         if self.HP / self.MaxHP == 1.00:

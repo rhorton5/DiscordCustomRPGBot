@@ -22,3 +22,6 @@ class Alchemist(PlayerCharacter):
     
     async def getClassName(self):
         return "Alchemist"
+    
+    async def __getClassLevelMod__(self):
+        return int(self.level/3) + 1

@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 from characters.defaultCharacter import DefaultCharacter
+from items.armor import Armor
+from items.item import Item
+from items.weapon import Weapon
 
 class PlayerCharacter(DefaultCharacter,ABC):
     def __init__(self,name: str, STR: int, DEX: int, AGI: int, CON: int, SPR: int, INT: int, WIS: int, CHA: int, LUC: int):
@@ -7,6 +10,10 @@ class PlayerCharacter(DefaultCharacter,ABC):
         self.level = 1
         self.xp = 0
         self.ele_res = dict()
+        self.rHand = None
+        self.lHand = None
+        self.armor = None
+        self.accesories = list()
         
     async def configureCharacter(self,jsonStats: dict):
         attributes = jsonStats["Attributes"][0]
@@ -16,8 +23,12 @@ class PlayerCharacter(DefaultCharacter,ABC):
         self.MaxMP = attributes["MaxMP"]
         self.xp = attributes["XP"]
         self.level = attributes["Level"]
+        self.id = jsonStats["AuthorID"]
+        self.gold = jsonStats["Gold"]
+        self.ele_res = jsonStats["Resistance"]
 
         self.skills = jsonStats["Skills"]
+        await self.setLP()
     
     async def setHP(self):
         self.MaxHP = self.HP
@@ -49,6 +60,10 @@ class PlayerCharacter(DefaultCharacter,ABC):
     async def __getLevelMod(self):
         return int(self.level/3) + 1
     
+    @abstractmethod
+    def __getClassLevelMod__(self):
+        pass
+    
     async def getMeleeAccuracy(self):
         return await super().getMeleeAccuracy() + self.__getLevelMod()
     
@@ -59,16 +74,27 @@ class PlayerCharacter(DefaultCharacter,ABC):
         return await super().getRangeAccuracy() + self.__getLevelMod()
     
     async def getMagicalAttackPower(self):
-        return 0
+        return self.INT
     
     async def getMagicalDefensePower(self):
-        return 0
+        score = self.SPR
+        if self.armor != None:
+            score += await self.armor.getMagicalDefense()
+        return score
     
     async def getPhysicalAttackPower(self):
-        return 0
+        wpn = self.rHand if self.rHand != None else self.lHand
+        if wpn == None:
+            return self.STR + 10
+        else:
+            return await wpn.getBaseDamage() + self.STR
     
     async def getPhysicalDefensePower(self):
-        return 0
+        score = self.CON
+        if self.armor != None:
+            score += await self.armor.getPhysicalDefense()
+        return score
+        
     
     async def createStatsSheet(self):
         return "❤️ **HP**: {}/{}\n✨ **MP**: {}/{}\n🍀 **LP**: {}/{}\n\n**XP**: {:,}/{:,}\n\n**Strength**: {}\n**Dexterity**: {}\n**Agility**: {}\n**Constitution**: {}\n**Spirit**: {}\n**Intellect**: {}\n**Wisdom**: {}\n**Charisma**: {}\n**Luck**: {}".format(
@@ -76,12 +102,40 @@ class PlayerCharacter(DefaultCharacter,ABC):
         )
     
     async def createElementalResistanceSheet(self):
-        return "🔥 Fire: {}% | 🌊 Water: {}% | 🌱 Earth: {}%\n💨 Wind: {}% | 🧊 Ice: {}% | ☠️ Posion: {}%\n☢️ Acid: {}% | ⚡ Electric: {}% | 💡 Light: {}%\n🌙 Dark: {}% | 👁️ Psychic: {}% | 🟣 Slag: {}%\n✊ Bludgeon: {}% | 📌 Pierce: {}% | 🗡️ Slash: {}%".format(
-            1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+        return "🔥 Fire: {}% \n 🌊 Water: {}% \n 🌱 Earth: {}%\n💨 Wind: {}% \n 🧊 Ice: {}% \n ☠️ Poison: {}%\n☢️ Acid: {}% \n ⚡ Electric: {}% \n 💡 Light: {}%\n🌙 Dark: {}% \n 👁️ Psychic: {}% \n 🟣 Slag: {}%\n✊ Bludgeon: {}% \n 📌 Pierce: {}% \n 🗡️ Slash: {}%".format(
+            *[
+                self.ele_res.get(ele,0) for ele in
+                ["Fire","Water","Earth","Wind","Ice","Poison","Acid","Electric","Light","Dark","Psychic","Slag","Bludgeon","Pierce","Slash"]
+            ]
         )
+    
+    async def createEquipmentStatus(self):
+        rhandDesc = await self.rHand.getStatusDescription(self.STR) if self.rHand != None else "-" * 10
+        lHandDesc = await self.lHand.getStatusDescription(self.STR) if self.lHand != None else "-" * 10
+        armorDesc = await self.armor.getStatusDescription() if self.armor != None else "-" * 10
+
+        return "Right Hand: {}\nLeft Hand: {}\n\nArmor: {}".format(rhandDesc,lHandDesc,armorDesc)
+    
+    async def createInventoryStatus(self):
+        return "Gold: {}\nInventory Weight: {} lbs. / {} lbs.".format(
+            self.gold, 
+            sum([await i.getWeight() for i in self.inventory]), 
+            await self.getCarryingCapacity()
+            )
     
     async def getSkillPoints(self):
         return self.getModifiers(self.INT)
+    
+    async def addItem(self,item: Item):
+        self.inventory.append(item)
+    
+    async def removeItem(self,itemName: str):
+        itemMatches = list(filter(lambda i: i.getName() == itemName,self.inventory))
+        if len(itemMatches) == 0:
+            return False
+        self.inventory.remove(itemMatches[0]) #just remove the first instance
+        return True
+
     
     @abstractmethod
     async def getStartingAbilityAmount(self):
@@ -97,6 +151,12 @@ class PlayerCharacter(DefaultCharacter,ABC):
     
     async def sessionStatus(self):
         return f"{self.name}  | Lvl. {self.level} | Health: **{self.healthDescription()}**"
+    
+    async def setAuthorID(self,author_id:str):
+        self.id = author_id
+    
+    async def getAuthorID(self):
+        return self.id
     
     async def generateJson(self):
         json = dict()
@@ -115,7 +175,9 @@ class PlayerCharacter(DefaultCharacter,ABC):
             "Intellect": self.INT,
             "Wisdom": self.WIS,
             "Charisma": self.CHA,
-            "Luck": self.LUC
+            "Luck": self.LUC,
+            "LP": self.LP,
+            "MaxLP": self.MaxLP
         },
         json["Equipment"] = {
             "Right Hand": None,
@@ -130,6 +192,7 @@ class PlayerCharacter(DefaultCharacter,ABC):
         json["Skills"] = await self.getSkillsDict()
         json["Resistance"] = {}
         json["Class"] = await self.getClassName()
+        json["AuthorID"] = await self.getAuthorID()
         return json
         
     

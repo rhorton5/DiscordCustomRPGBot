@@ -23,3 +23,6 @@ class Berserker(PlayerCharacter):
     
     async def getClassName(self):
         return "Berserker"
+    
+    async def __getClassLevelMod__(self):
+        return int(self.level/3) + 1

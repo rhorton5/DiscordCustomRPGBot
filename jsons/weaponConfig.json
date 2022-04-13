@@ -1,0 +1,35 @@
+{
+    "Rapier":
+    {
+        "Type": "Weapon",
+        "Base Damage": 10,
+        "Damage Type": "Piercing",
+        "Variance": 0.2,
+        "Critical Modifier": 2.5,
+        "Traits": ["Finesse","Light"],
+        "Weight": 5.0,
+        "Value": 75
+    },
+    "Cutlass":
+    {
+        "Base Damage": 8,
+        "Type": "Weapon",
+        "Damage Type": "Slashing",
+        "Variance": 0.35,
+        "Critical Modifier": 2.5,
+        "Traits": ["Light"],
+        "Weight": 5.0,
+        "Value": 75
+    },
+    "Speedy Stabby Knife":
+    {
+        "Base Damage": 125,
+        "Type": "Weapon",
+        "Damage Type": "Piercing",
+        "Variance": 0.35,
+        "Critical Modifier": 2.0,
+        "Traits": ["Light","Critical Surge"],
+        "Weight": 5.0,
+        "Value": 1250
+    }
+}

@@ -17,4 +17,7 @@ class Armor(Item):
     
     async def getElementalResistance(self,element: str):
         return self.ele_res.get(element.lower(),0.00)
+    
+    async def getStatusDescription(self):
+        return f"{self.name} | {self.phys_res} Physical | {self.magi_res} Magical"
 

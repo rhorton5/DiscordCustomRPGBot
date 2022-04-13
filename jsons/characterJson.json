@@ -23,6 +23,7 @@
           "XP": 0
         }
       ],
+      "AuthorID": "221741998367834113",
       "Class": "Mercenary",
       "Equipment": [
         {
@@ -38,7 +39,10 @@
       "Inventory": [
         []
       ],
-      "Resistance": {},
+      "Resistance": {
+        "Fire": 20,
+        "Dark": -20
+      },
       "Skills": {
         "Athletic": {
           "Attribute": "Strength",
@@ -84,6 +88,7 @@
           "XP": 0
         }
       ],
+      "AuthorID": "221741998367834113",
       "Class": "Berserker",
       "Equipment": [
         {
