@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+
+from items.item import Item
 class DefaultCharacter(ABC):
     def __init__(self,name: str, STR: int, DEX: int, AGI: int, CON: int, SPR: int, INT: int, WIS: int, CHA: int, LUC: int,img_url = None):
         self.name = name
@@ -71,6 +73,9 @@ class DefaultCharacter(ABC):
     async def getSkillsDict(self):
         return self.skills
     
+    async def doesCrit(self,diceRoll: int):
+        return diceRoll >= 20 - int(self.LUC/20)
+    
     async def rollInitiative(self,diceRoll=1):
         self.initiative = diceRoll + self.getModifiers(self.AGI)
 
@@ -110,6 +115,6 @@ class DefaultCharacter(ABC):
             score = self.skills[skill]["Rank Points"] + await self.__getAttribute(self.skills[skill]["Attribute"])
             string += f"**{skill}**: +{score}\n"
         return string
-    
+        
     async def getName(self):
         return self.name

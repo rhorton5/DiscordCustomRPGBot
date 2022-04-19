@@ -157,6 +157,47 @@ class Session(Cog):
             await ctx.respond(f"{await character.getName()} has added {filterItemList[0].getName()} to their inventory!")
             self.activeSession[guild_id]["Items"].remove(filterItemList[0])
             await self.activeSession[guild_id]["ChannelMSG"].edit_original_message(embed=await self.__createSessionEmbed(guild_id))
+    
+    @slash_command(name="equip_to_hand",description="Equip an item to your hand",guild_ids=[903338023960313876])
+    async def equipToHand(self,ctx: ApplicationContext,character_name: str, itemname: str, righthand: bool):
+        author_id = str(ctx.author.id)
+        guild_id = str(ctx.guild.id)
+        if await self.isActiveSession(guild_id) == False:
+            await ctx.respond("You must have an active session first...")
+            return
+        
+        character = await self.getCharacter(guild_id,character_name)
+        if character == None or await character.getAuthorID() != author_id:
+            await ctx.respond("Your character does not exist in this session...")
+            return
+        
+        item = await character.getItem(itemname)
+        if item != None and item[0] != None:
+            await character.removeItem(item[0].getName())
+            await character.equipToHand(item[0],righthand)
+            await ctx.respond(f"{item[0].getName()} has been added to {await character.getName()}'s {'Right' if righthand == True else 'Left'} Hand")
+        else:
+            await ctx.respond("You do not have this item...")
+    
+    @slash_command(name="unequip_from_hand",description="Remove an item from your hand back to your inventory.",guild_ids=[903338023960313876])
+    async def unequipFromHand(self,ctx: ApplicationContext,character_name:str,righthand: bool):
+        author_id = str(ctx.author.id)
+        guild_id = str(ctx.guild.id)
+        if await self.isActiveSession(guild_id) == False:
+            await ctx.respond("You must have an active session first...")
+            return
+        
+        character = await self.getCharacter(guild_id,character_name)
+        if character == None or await character.getAuthorID() != author_id:
+            await ctx.respond("Your character does not exist in this session...")
+            return
+        
+        await character.unequipHand(righthand)
+        await ctx.respond("Removed from hand.")
+    
+    @slash_command(name="attack",description="Attack a character",guild_ids=[903338023960313876])
+    async def attack(self,ctx: ApplicationContext,attacker_name:str, target_name:str,rightHand: bool):
+        
 
 def setup(bot: Bot):
     bot.add_cog(Session(bot))

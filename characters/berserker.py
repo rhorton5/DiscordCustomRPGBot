@@ -1,4 +1,5 @@
 from characters.playerCharacter import PlayerCharacter
+from items.item import Item
 
 class Berserker(PlayerCharacter):
     def __init__(self, name: str, STR: int, DEX: int, AGI: int, CON: int, SPR: int, INT: int, WIS: int, CHA: int, LUC: int):
@@ -26,3 +27,6 @@ class Berserker(PlayerCharacter):
     
     async def __getClassLevelMod__(self):
         return int(self.level/3) + 1
+    
+    async def equipToHand(self, item: Item, toRightHand=True):
+        return await super().equipToHand(item, toRightHand)

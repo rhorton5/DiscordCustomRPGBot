@@ -135,7 +135,9 @@ class PlayerCharacter(DefaultCharacter,ABC):
             return False
         self.inventory.remove(itemMatches[0]) #just remove the first instance
         return True
-
+    
+    async def getItem(self,itemName: str):
+        return [item for item in self.inventory if item.getName() == itemName]
     
     @abstractmethod
     async def getStartingAbilityAmount(self):
@@ -157,6 +159,27 @@ class PlayerCharacter(DefaultCharacter,ABC):
     
     async def getAuthorID(self):
         return self.id
+
+    async def equipToHand(self,item: Item, toRightHand=True):
+        if toRightHand == True:
+            if self.rHand != None:
+                await self.addItem(self.rHand)
+            self.rHand = item
+            return
+        
+        if self.lHand != None:
+            await self.addItem(self.lHand)
+        self.lHand = item
+    
+    async def unequipHand(self,toRightHand=True):
+        if toRightHand == True and self.rHand != None:
+            await self.addItem(self.rHand)
+            self.rHand = None
+        else:
+            if self.lHand != None:
+                await self.addItem(self.lHand)
+                self.lHand = None
+        
     
     async def generateJson(self):
         json = dict()
