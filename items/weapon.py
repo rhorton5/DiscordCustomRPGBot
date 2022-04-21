@@ -18,6 +18,9 @@ class Weapon(Item):
     async def getCriticalModifier(self):
         return self.crit_mod
     
+    async def getDamageType(self):
+        return self.dmg_type
+    
     async def dealDamage(self,STR=0,criticalHit=False):
         critBonus = (self.crit_mod - 1.00) if criticalHit == True else 0.00
         return int((self.base_dmg + STR) * uniform(1 - self.variance + critBonus, 1 + self.variance + critBonus))

@@ -151,9 +151,6 @@ class PlayerCharacter(DefaultCharacter,ABC):
     async def getClassName(self):
         pass
     
-    async def sessionStatus(self):
-        return f"{self.name}  | Lvl. {self.level} | Health: **{self.healthDescription()}**"
-    
     async def setAuthorID(self,author_id:str):
         self.id = author_id
     

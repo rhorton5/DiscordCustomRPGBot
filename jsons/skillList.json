@@ -30,6 +30,9 @@
         "Subtypes": ["Nature","Arcana","Medical","History","Technology","Academia","Occult"],
         "Attribute": "Intellect"
     },
+    "Linguistic": {
+        "Attribute": "Intellect"
+    },
     "Insight":{
         "Attribute": "Wisdom"
     },

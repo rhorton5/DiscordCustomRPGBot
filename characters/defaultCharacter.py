@@ -44,8 +44,6 @@ class DefaultCharacter(ABC):
         return await hand.dealDamage(self.STR if "Finesse" not in await hand.getTraits() else self.DEX,crits)
     
     async def takeDamage(self,dmg,dmgType):
-        print(dmg)
-        print(dmgType)
         dmgMod = self.elemental_resistance.get(dmgType,0.00) + 1.00
         defenseMod = (self.CON if dmgType in ["Bludgeon","Slash","Pierce"] else self.SPR)
         dmg = int((dmg - defenseMod) * dmgMod)
@@ -56,6 +54,9 @@ class DefaultCharacter(ABC):
     
     async def isAlive(self):
         return self.HP > 0
+
+    async def setInitiative(self,diceRoll: int):
+        self.initiative = self.getModifiers(self.AGI) + diceRoll
     
     @abstractmethod
     async def getMagicAccuracy(self):
@@ -109,8 +110,8 @@ class DefaultCharacter(ABC):
         else:
             return "KO'ed"
     
-    async def sessionStatus(self):
-        return f"{self.name}  | Health: **{self.healthDescription()}**"
+    async def sessionStatus(self,inCombat=False):
+        return f"{'[{}]'.format(self.initiative) if inCombat == True else ''} {self.name}  | Health: **{self.healthDescription()}**"
 
     
     async def __getAttribute(self,attribute: str):
@@ -136,3 +137,8 @@ class DefaultCharacter(ABC):
         
     async def getName(self):
         return self.name
+    
+    async def getWeaponDamageType(self,rightHand=True):
+        if rightHand == True:
+            return await self.rHand.getDamageType() if self.rHand != None else "Bludgeon"
+        return await self.lHand.getDamageType() if self.lHand != None else "Bludgeon"
