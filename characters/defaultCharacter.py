@@ -39,6 +39,24 @@ class DefaultCharacter(ABC):
     async def getRangeAccuracy(self):
         return self.getModifers(self.DEX)
     
+    async def dealMeleeDamage(self,rightHand=True,crits=False):
+        hand = self.rHand if rightHand == True else self.lHand
+        return await hand.dealDamage(self.STR if "Finesse" not in await hand.getTraits() else self.DEX,crits)
+    
+    async def takeDamage(self,dmg,dmgType):
+        print(dmg)
+        print(dmgType)
+        dmgMod = self.elemental_resistance.get(dmgType,0.00) + 1.00
+        defenseMod = (self.CON if dmgType in ["Bludgeon","Slash","Pierce"] else self.SPR)
+        dmg = int((dmg - defenseMod) * dmgMod)
+        if dmg < 0:
+            dmg = 0
+        self.HP -= dmg
+        return dmg
+    
+    async def isAlive(self):
+        return self.HP > 0
+    
     @abstractmethod
     async def getMagicAccuracy(self):
         pass #This is class dependent

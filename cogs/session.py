@@ -5,6 +5,7 @@ from jsons.jsonManager import loadCharacterJson, loadWeaponJson
 from characters.loadCharacter import loadCharacter
 from views.characterSheetEmb import CharacterSheetEmb
 from items.itemFactory import createItem
+from mechanics.combat import meleeAttack
 
 #Colors
 normal_emb_color = 0x0096FF
@@ -195,8 +196,22 @@ class Session(Cog):
         await character.unequipHand(righthand)
         await ctx.respond("Removed from hand.")
     
-    @slash_command(name="attack",description="Attack a character",guild_ids=[903338023960313876])
-    async def attack(self,ctx: ApplicationContext,attacker_name:str, target_name:str,rightHand: bool):
+    @slash_command(name="melee_attack",description="Attack a character",guild_ids=[903338023960313876])
+    async def attack(self,ctx: ApplicationContext,attacker_name:str, target_name:str,right_hand: bool):
+        author_id = str(ctx.author.id)
+        guild_id = str(ctx.guild.id)
+        if await self.isActiveSession(guild_id) == False:
+            await ctx.respond("You must have an active session first...")
+            return
+        
+        attacker_character = await self.getCharacter(guild_id,attacker_name)
+        target_character = await self.getCharacter(guild_id,target_name)
+        if attacker_character == None or target_character == None:
+            await ctx.respond("Your character does not exist in this session...")
+            return
+        
+        await meleeAttack(ctx,attacker_character,target_character,right_hand)
+        
         
 
 def setup(bot: Bot):

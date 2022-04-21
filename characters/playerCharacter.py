@@ -65,7 +65,7 @@ class PlayerCharacter(DefaultCharacter,ABC):
         pass
     
     async def getMeleeAccuracy(self):
-        return await super().getMeleeAccuracy() + self.__getLevelMod()
+        return await super().getMeleeAccuracy() + await self.__getLevelMod()
     
     async def getMagicAccuracy(self):
         return self.getModifiers(self.INT) + self.__getLevelMod()
