@@ -267,4 +267,3 @@ class Session(Cog):
 def setup(bot: Bot):
     bot.add_cog(Session(bot))
     
-

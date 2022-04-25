@@ -1,7 +1,14 @@
 from discord import Bot, Cog, Embed, slash_command
 from characters.alchemist import Alchemist
+from characters.assassin import Assassin
 from characters.berserker import Berserker
+from characters.bountyHunter import BountyHunter
+from characters.dancer import Dancer
+from characters.gadgeteer import Gadgeteer
 from characters.mercenary import Mercenary
+from characters.paladin import Paladin
+from characters.shaman import Shaman
+from characters.sorcerer import Sorcerer
 from characters.playerCharacter import PlayerCharacter
 from views.characterSheetView import CharacterSheetView, ConfirmStats
 from views.classViews import ClassSelectionView
@@ -95,7 +102,14 @@ class PlayerCharacterFactory:
         switch = {
             "Mercenary": Mercenary,
             "Alchemist": Alchemist,
-            "Berserker": Berserker
+            "Berserker": Berserker,
+            "Paladin": Paladin,
+            "Sorcerer": Sorcerer,
+            "Shaman": Shaman,
+            "Dancer": Dancer,
+            "Bounty Hunter": BountyHunter,
+            "Assassin": Assassin,
+            "Gadgeteer": Gadgeteer
         }
         pc = switch[className](name,att["Strength"],att["Dexterity"],att["Agility"],att["Constitution"],att["Spirit"],att["Intellect"],att["Wisdom"],att["Charisma"],att["Luck"])
         await pc.setHP()

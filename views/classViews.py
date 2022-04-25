@@ -8,7 +8,15 @@ class ClassSelection(Select):
         options = [
             SelectOption(label="Mercenary",description="Think Fighter...",emoji="⚔️"),
             SelectOption(label="Alchemist",description="Think Wizard...",emoji="🍾"),
-            SelectOption(label="Berserker",description="Think Barbarian...",emoji="💪")
+            SelectOption(label="Berserker",description="Think Barbarian...",emoji="💪"),
+            SelectOption(label="Paladin",description="Cast Smite...",emoji="✝️"),
+            SelectOption(label="Sorcerer",description="Think Wizard...",emoji="🪄"),
+            SelectOption(label="Shaman",description="Nature Lover...",emoji="🌿"),
+            SelectOption(label="Dancer",description="Think Bard...",emoji="🎵"),
+            SelectOption(label="Bounty Hunter",description="Think Ranger...",emoji="🏹"),
+            SelectOption(label="Assassin",description="Think Rouge...",emoji="🕵️"),
+            SelectOption(label="Gadgeteer",description="Engineers...",emoji="🔧")
+
         ]
 
         super().__init__(
