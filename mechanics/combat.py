@@ -23,3 +23,5 @@ async def startInitiative(characters: list):
     for c in characters:
         await c.setInitiative(rollD20())
     return list(sorted(characters, key=lambda c: c.initiative,reverse=True))
+
+#This is just to make sure git works!
