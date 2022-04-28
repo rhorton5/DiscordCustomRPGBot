@@ -2,11 +2,12 @@ from pydoc import describe
 from discord import ApplicationCommand, ApplicationContext, Bot, Cog, Embed, slash_command
 from characters.defaultCharacter import DefaultCharacter
 from items.item import Item
-from jsons.jsonManager import loadCharacterJson, loadWeaponJson
+from jsons.jsonManager import getSkillList, loadCharacterJson, loadWeaponJson
 from characters.loadCharacter import loadCharacter
 from views.characterSheetEmb import CharacterSheetEmb
 from items.itemFactory import createItem
 from mechanics.combat import meleeAttack, startInitiative
+from mechanics.skillcheck import skillCheck
 
 #Colors
 normal_emb_color = 0x0096FF
@@ -20,7 +21,7 @@ class Session(Cog):
         self.activeSession = dict()
         tmpItem = loadWeaponJson()
         self.items = [createItem(i,tmpItem[i]) for i in tmpItem.keys()]
-        print(self.items) 
+        self.skillList = getSkillList()
     
     @slash_command(name="start_session",description="Starts the session for this campaign!",guild_ids=[903338023960313876])
     async def startSession(self,ctx):
@@ -198,9 +199,58 @@ class Session(Cog):
         
         #Notify of Player's turn
         await self.sendCharacterTurn(ctx,guild_id)
+    
+    @slash_command(name="roll_skill",description="Roll A Skill For Your Character",guild_ids=[903338023960313876])
+    async def rollSkill(self,ctx: ApplicationContext, character_name: str, skill_name: str):
+        author_id = str(ctx.author.id)
+        guild_id = str(ctx.guild.id)
+        if await self.isActiveSession(guild_id) == False:
+            await ctx.respond("You must have an active session first...")
+            return
+        
+        character = await self.getCharacter(guild_id,character_name)
+        if character == None or await character.getAuthorID() != author_id:
+            await ctx.respond("Your character does not exist in this session...")
+            return
+        
+        skill_name = await self.findSkill(skill_name)
+        if skill_name == None:
+            await ctx.respond(f"{skill_name} is not a valid skill.")
+            return
+        
+        attribute = self.skillList[skill_name]["Attribute"]
+        scoreData = await skillCheck(character,skill_name,attribute)
+        embed = Embed(title=f"{await character.getName()}'s {skill_name} check!",description="🎲 **{}**\n{}".format(
+            scoreData["Score"], "**CRITICAL HIT!**" if scoreData["Crits"] == True else ("**CRITICAL FAILURE!**" if scoreData["Fails"] else "")
+            )
+        )
+        await ctx.respond(embed=embed)
+       
+    '''
+    
+    COMMONLY USED METHODS
 
-             
-    #Commonly Used Methods
+
+    '''
+
+    async def findSkill(self,skill_name: str):
+        if "Knowledge" in skill_name:
+            subtype = skill_name[11:len(skill_name)-1]
+            for sub in self.skillList["Knowledge"]["Subtypes"]:
+                if subtype == sub:
+                    return "Knowledge"
+            return None
+        
+        elif "Performance" in skill_name:
+            subtype = skill_name[13:len(skill_name)-1]
+            for sub in self.skillList["Performance"]["Subtypes"]:
+                if subtype == sub:
+                    return "Performance"
+            return None
+        
+        return skill_name if skill_name in self.skillList.keys() else None
+
+
     async def removeItemFromItemsList(self,guild_id: str, itemList: list):
         self.activeSession[guild_id]["Items"].remove(itemList[0])
     

@@ -48,7 +48,7 @@
     "Persuasion": {
         "Attribute": "Charisma"
     },
-    "Performace": {
+    "Performance": {
         "Subtypes": ["Singing","Insturment","Act","Comedy","Storytelling"],
         "Attribute": "Charisma"
     },

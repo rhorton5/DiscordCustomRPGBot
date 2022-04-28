@@ -12,7 +12,7 @@ async def meleeAttack(ctx: ApplicationContext, attacker: DefaultCharacter, targe
         dmg_type = await attacker.getWeaponDamageType(rightHand)
         dmg = await attacker.dealMeleeDamage(rightHand,crits)
         dmg = await target.takeDamage(dmg,"Bludgeon")
-        responseStr += f"{'**CRITICAL HIT!!!***' if crits == True else ''}\n{await target.getName()} takes {dmg} {dmg_type} damage!"
+        responseStr += f"{'**CRITICAL HIT!!!***' if crits == True else ''}\n{await target.getName()} takes **{dmg}** {dmg_type} damage!"
         await ctx.respond(responseStr)
         return
 

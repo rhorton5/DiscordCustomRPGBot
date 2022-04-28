@@ -92,6 +92,12 @@ class DefaultCharacter(ABC):
     async def getSkillsDict(self):
         return self.skills
     
+    async def getSkillMod(self,skillName: str, attribute: str):
+        if skillName not in self.skills.keys():
+            return await self.__getAttribute(attribute)
+        #TO-DO: Change characterJsons.json to only have the skill's name and the rank points.  I.E -> "Athletic": 5
+        return await self.__getAttribute(attribute) + self.skills[skillName]["Rank Points"]
+    
     async def doesCrit(self,diceRoll: int):
         return diceRoll >= 20 - int(self.LUC/20)
     
@@ -106,7 +112,7 @@ class DefaultCharacter(ABC):
         elif self.HP / self.MaxHP >= 0.25:
             return "Really Hurt..."
         elif self.HP > 0:
-            return "Critical..."
+            return "Critical!"
         else:
             return "KO'ed"
     
